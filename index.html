@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quetzal Table</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky: #4997D0;
+    --sky-deep: #1B4F72;
+    --white: #FFFFFF;
+    --cream: #FAF7F1;
+    --quetzal-red: #B23A48;
+    --gold: #D9A441;
+    --ink: #1C2B33;
+    --border: rgba(27,79,114,0.15);
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  body{
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+  body.order-open{ overflow: hidden; }
+  body.has-order{ padding-bottom: 84px; }
+
+  h1, h2, h3, .display{
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  a{ color: inherit; text-decoration: none; }
+  button{ font-family: inherit; }
+
+  :focus-visible{
+    outline: 3px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .weave{
+    height: 14px;
+    width: 100%;
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--sky) 0 10px,
+      var(--white) 10px 20px,
+      var(--gold) 20px 30px,
+      var(--white) 30px 40px,
+      var(--quetzal-red) 40px 50px,
+      var(--white) 50px 60px
+    );
+  }
+
+  header{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  nav{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .nav-links{
+    display: flex;
+    gap: 32px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--sky-deep);
+  }
+  .nav-links a:hover{ color: var(--quetzal-red); }
+  .logo{
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--sky-deep);
+    letter-spacing: 0.01em;
+  }
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+  }
+  .lang-toggle{
+    display:flex;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .lang-toggle button{
+    border: none;
+    background: var(--white);
+    color: var(--sky-deep);
+    padding: 7px 14px;
+    cursor: pointer;
+  }
+  .lang-toggle button.active{
+    background: var(--sky-deep);
+    color: var(--white);
+  }
+  .nav-actions{
+    display:flex;
+    gap: 8px;
+  }
+  .pill{
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+  }
+  .pill-fill{
+    background: var(--quetzal-red);
+    color: var(--white);
+  }
+  .pill-fill:hover{ background: #99303c; }
+  .pill-outline{
+    background: var(--white);
+    color: var(--quetzal-red);
+    border: 1.5px solid var(--quetzal-red);
+  }
+  .pill-outline:hover{ background: rgba(178,58,72,0.06); }
+
+  @media (max-width: 860px){
+    .nav-links{ display:none; }
+  }
+  @media (max-width: 560px){
+    .nav-actions .label-text{ display:none; }
+    .pill{ padding: 9px 12px; }
+  }
+
+  .hero{
+    position: relative;
+    background: linear-gradient(180deg, var(--sky) 0%, #5EA3D6 55%, var(--sky) 100%);
+    padding: 100px 32px 120px;
+    text-align: center;
+    overflow: hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.10) 0, transparent 45%),
+                       radial-gradient(circle at 82% 70%, rgba(255,255,255,0.08) 0, transparent 40%);
+  }
+  .hero-content{
+    position: relative;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .hero-eyebrow{
+    color: rgba(255,255,255,0.85);
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .hero h1{
+    color: var(--white);
+    font-size: clamp(42px, 7vw, 76px);
+    line-height: 1.02;
+    margin-bottom: 22px;
+  }
+  .hero p{
+    color: rgba(255,255,255,0.92);
+    font-size: 18px;
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 36px;
+  }
+
+  .cta-group{
+    display:flex;
+    justify-content:center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+  .cta-btn{
+    display: inline-flex;
+    align-items:center;
+    gap: 9px;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 16px 34px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  .cta-btn svg{ width:18px; height:18px; flex-shrink:0; }
+  .cta-call{
+    background: var(--white);
+    color: var(--quetzal-red);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  }
+  .cta-call:hover{ background: var(--cream); }
+  .cta-text{
+    background: transparent;
+    color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.7);
+  }
+  .cta-text:hover{ border-color: var(--white); background: rgba(255,255,255,0.08); }
+
+  .hero-note{
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .phone-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 10px;
+    flex-wrap: wrap;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+  }
+  .copy-btn{
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.85);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display:inline-flex;
+    align-items:center;
+    gap: 5px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+  .copy-btn:hover{ background: rgba(255,255,255,0.12); }
+  .copy-btn svg{ width:13px; height:13px; }
+  .copy-btn.copied{ border-color: rgba(255,255,255,0.9); }
+
+  section{ padding: 90px 32px; }
+  .section-inner{ max-width: 1200px; margin: 0 auto; }
+  .section-head{
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto 56px;
+  }
+  .section-head h2{
+    font-size: clamp(30px, 4vw, 42px);
+    color: var(--sky-deep);
+    margin-bottom: 14px;
+  }
+  .section-head p{
+    font-size: 16px;
+    color: #566873;
+    line-height: 1.6;
+  }
+
+  .menu-block + .menu-block{ margin-top: 76px; }
+  .menu-block-head{ margin-bottom: 34px; }
+  .menu-block-head h3{
+    font-size: clamp(24px, 3vw, 30px);
+    color: var(--sky-deep);
+    margin-bottom: 10px;
+  }
+  .menu-block-head p{
+    font-size: 15px;
+    color: #6b7d87;
+    line-height: 1.6;
+    max-width: 480px;
+  }
+  .menu-block-head::after{
+    content:"";
+    display:block;
+    height: 5px;
+    width: 108px;
+    margin-top: 18px;
+    background-image: repeating-linear-gradient(
+      135deg,
+      var(--sky) 0 8px,
+      var(--gold) 8px 16px,
+      var(--quetzal-red) 16px 24px
+    );
+  }
+
+  .menu-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  @media (max-width: 900px){
+    .menu-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px){
+    .menu-grid{ grid-template-columns: 1fr; }
+  }
+
+  .dish-card{
+    display:flex;
+    flex-direction: column;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+  }
+  .dish-photo{
+    aspect-ratio: 4 / 3;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: rgba(255,255,255,0.9);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+  }
+  .dish-photo span{ position: relative; z-index: 1; }
+  .dish-photo::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.08) 0 8px, transparent 8px 16px);
+  }
+  .ph-1{ background: linear-gradient(135deg, var(--sky), var(--sky-deep)); }
+  .ph-2{ background: linear-gradient(135deg, var(--gold), #b9852f); }
+  .ph-3{ background: linear-gradient(135deg, var(--quetzal-red), #7c2833); }
+  .ph-4{ background: linear-gradient(135deg, #5EA3D6, var(--sky)); }
+  .ph-5{ background: linear-gradient(135deg, #e0b563, var(--gold)); }
+  .ph-6{ background: linear-gradient(135deg, #c65763, var(--quetzal-red)); }
+
+  .pick{
+    position: absolute;
+    z-index: 2;
+    top: 12px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.92);
+    color: var(--sky-deep);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .pick svg{ width: 18px; height: 18px; }
+  .pick .icon-check{ display:none; }
+
+  .dish-card.picked .dish-photo{
+    box-shadow: 0 0 0 3px var(--quetzal-red);
+  }
+  .dish-card.picked .pick{
+    background: var(--quetzal-red);
+    color: var(--white);
+  }
+  .dish-card.picked .pick .icon-check{ display:block; }
+  .dish-card.picked .pick .icon-plus{ display:none; }
+
+  .dish-name{
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .dish-desc{
+    font-size: 14px;
+    color: #6b7d87;
+    line-height: 1.5;
+  }
+  .dish-status{
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--quetzal-red);
+    visibility: hidden;
+  }
+  .dish-card.picked .dish-status{ visibility: visible; }
+
+  .story{
+    background: var(--cream);
+  }
+  .story-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+  @media (max-width: 800px){
+    .story-grid{ grid-template-columns: 1fr; }
+  }
+  .story-photo{
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: linear-gradient(160deg, var(--gold), var(--quetzal-red));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: rgba(255,255,255,0.9);
+    font-size: 14px;
+  }
+  .story-text .kicker{
+    color: var(--quetzal-red);
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .story-text h2{
+    font-size: clamp(28px, 4vw, 38px);
+    color: var(--sky-deep);
+    margin-bottom: 18px;
+    line-height: 1.1;
+  }
+  .story-text p{
+    font-size: 16px;
+    line-height: 1.7;
+    color: #566873;
+    margin-bottom: 16px;
+  }
+
+  .cta-band{
+    background: var(--sky-deep);
+    text-align:center;
+    color: var(--white);
+  }
+  .cta-band h2{
+    color: var(--white);
+    font-size: clamp(28px, 4vw, 40px);
+    margin-bottom: 20px;
+  }
+  .cta-band > .section-inner > p{
+    color: rgba(255,255,255,0.8);
+    max-width: 480px;
+    margin: 0 auto 32px;
+    line-height: 1.6;
+  }
+  .cta-band .cta-call{ color: var(--sky-deep); }
+
+  footer{
+    background: var(--quetzal-red);
+    color: var(--white);
+    padding: 56px 32px 32px;
+  }
+  .footer-inner{
+    max-width: 1200px;
+    margin: 0 auto;
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+  .footer-brand{
+    font-family:'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+  .footer-inner address, .footer-inner .fine{
+    font-style: normal;
+    font-size: 14px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+  }
+  .footer-links{
+    display:flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+  .footer-col h4{
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+    color: rgba(255,255,255,0.7);
+  }
+  .footer-col a{
+    display:block;
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 10px;
+  }
+  .footer-col a:hover{ color: var(--white); }
+  .footer-bottom{
+    max-width: 1200px;
+    margin: 40px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* ---------- order bar ---------- */
+  .order-bar{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    background: var(--sky-deep);
+    color: var(--white);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.18);
+    transform: translateY(110%);
+    transition: transform 220ms ease;
+  }
+  .order-bar.visible{ transform: translateY(0); }
+  .order-bar-count{
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+  }
+  .order-bar-actions{ display:flex; align-items:center; gap: 14px; }
+  .order-bar button.review{
+    background: var(--quetzal-red);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    padding: 13px 26px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .order-bar button.review:hover{ background: #99303c; }
+  .order-bar button.clear{
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  .order-bar button.clear:hover{ color: var(--white); }
+  @media (max-width: 560px){
+    .order-bar{ gap: 10px; padding: 12px 16px; }
+    .order-bar-count{ width: 100%; text-align: center; font-size: 14px; }
+  }
+
+  /* ---------- modal ---------- */
+  .backdrop{
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(19,42,58,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .backdrop.open{ display:flex; }
+  .sheet{
+    background: var(--white);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .sheet-head{
+    padding: 22px 26px 18px;
+    border-bottom: 1px solid var(--border);
+    display:flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .sheet-head h3{
+    font-size: 24px;
+    color: var(--sky-deep);
+  }
+  .sheet-head p{
+    font-size: 14px;
+    color: #6b7d87;
+    margin-top: 4px;
+  }
+  .close-x{
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sky-deep);
+    padding: 4px;
+    line-height: 0;
+  }
+  .close-x svg{ width: 22px; height: 22px; }
+
+  .sheet-body{
+    overflow-y: auto;
+    padding: 22px 26px 26px;
+  }
+
+  .order-list{ margin-bottom: 26px; }
+  .order-item{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .order-item-swatch{
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .order-item-name{
+    flex: 1;
+    font-size: 15px;
+    font-weight: 500;
+  }
+  .qty{
+    display:flex;
+    align-items:center;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .qty button{
+    background: var(--white);
+    border: none;
+    color: var(--sky-deep);
+    width: 32px;
+    height: 32px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .qty button:hover{ background: var(--cream); }
+  .qty span{
+    min-width: 30px;
+    text-align:center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .empty-note{
+    font-size: 15px;
+    color: #6b7d87;
+    line-height: 1.6;
+    padding: 8px 0 4px;
+  }
+
+  .method-tabs{
+    display:flex;
+    gap: 8px;
+    background: var(--cream);
+    padding: 5px;
+    border-radius: 8px;
+    margin-bottom: 22px;
+  }
+  .method-tabs button{
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 11px 10px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--sky-deep);
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 8px;
+  }
+  .method-tabs button svg{ width: 16px; height: 16px; }
+  .method-tabs button.active{
+    background: var(--sky-deep);
+    color: var(--white);
+  }
+
+  .panel{ display:none; }
+  .panel.active{ display:block; }
+
+  .step{
+    display:flex;
+    gap: 14px;
+    padding-bottom: 22px;
+  }
+  .step-num{
+    width: 26px;
+    height: 26px;
+    border-radius: 999px;
+    background: var(--sky-deep);
+    color: var(--white);
+    font-size: 13px;
+    font-weight: 600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-body{ flex: 1; }
+  .step-body h4{
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .step-body p{
+    font-size: 14px;
+    color: #6b7d87;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .btn-solid, .btn-line{
+    display:inline-flex;
+    align-items:center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+  }
+  .btn-solid{ background: var(--quetzal-red); color: var(--white); }
+  .btn-solid:hover{ background: #99303c; }
+  .btn-line{ background: var(--white); color: var(--sky-deep); border-color: var(--border); }
+  .btn-line:hover{ background: var(--cream); }
+  .btn-solid svg, .btn-line svg{ width: 15px; height: 15px; }
+  .btn-wide{ width: 100%; justify-content: center; padding: 14px 20px; font-size: 15px; }
+
+  .msg-box{
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink);
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+  }
+
+  .call-lead{
+    font-size: 15px;
+    color: #566873;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+  .call-number{
+    font-family: 'Fraunces', serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--sky-deep);
+    margin-bottom: 6px;
+  }
+  .call-hours{
+    font-size: 14px;
+    color: #6b7d87;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 560px){
+    .backdrop{ padding: 0; align-items: flex-end; }
+    .sheet{ max-height: 94vh; border-radius: 12px 12px 0 0; }
+    .sheet-head, .sheet-body{ padding-left: 18px; padding-right: 18px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .order-bar{ transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="nav-links">
+      <a href="#menu" data-en="Menu" data-es="Menú">Menu</a>
+      <a href="#story" data-en="Our Story" data-es="Nuestra Historia">Our Story</a>
+      <a href="#" data-en="Catering" data-es="Catering">Catering</a>
+    </div>
+    <div class="logo">Quetzal Table</div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button id="btn-en" class="active" onclick="setLang('en')">EN</button>
+        <button id="btn-es" onclick="setLang('es')">ES</button>
+      </div>
+      <div class="nav-actions">
+        <a href="tel:+15555555555" class="pill pill-fill">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span class="label-text" data-en="Call" data-es="Llamar">Call</span>
+        </a>
+        <a href="sms:+15555555555" class="pill pill-outline">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span class="label-text" data-en="Text" data-es="Mensaje">Text</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="weave"></div>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow" data-en="Guatemalan catering, family recipes" data-es="Catering guatemalteco, recetas familiares">Guatemalan catering, family recipes</div>
+    <h1 class="display" data-en="Sabor de Guatemala" data-es="Sabor de Guatemala">Sabor de Guatemala</h1>
+    <p data-en="Pick what you want from the menu, then send it to us in one message." data-es="Guisos de cocción lenta, masa fresca y salsas frescas, preparados como nos enseñaron nuestras abuelas. Elija lo que quiera del menú y envíenos su pedido en un solo mensaje.">Slow-cooked stews, fresh masa, and bright salsas, made the way our abuelas taught us. Pick what you want from the menu, then send it to us in one message.</p>
+
+    <div class="cta-group">
+      <a href="#menu" class="cta-btn cta-call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"></path></svg>
+        <span data-en="Look at the menu" data-es="Vea el menú">Look at the menu</span>
+      </a>
+    </div>
+
+    <p class="hero-note" data-en="Tap the dishes you want, then send your list by text or call us." data-es="Toque los platillos que quiera, luego envíe su lista por mensaje o llámenos.">Tap the dishes you want, then send your list by text or call us.</p>
+  </div>
+</section>
+
+<div class="weave"></div>
+
+<section id="menu">
+  <div class="section-inner">
+    <div class="section-head">
+      <h2 data-en="Browse the Menu" data-es="Vea el Menú">Browse the Menu</h2>
+      <p data-en="Tap any dish to add it to your list. Most items are still placeholders while the real menu and photos are put together." data-es="Toque cualquier platillo para agregarlo a su lista. La mayoría son de muestra mientras se prepara el menú real con fotos.">Tap any dish to add it to your list. Most items are still placeholders while the real menu and photos are put together.</p>
+    </div>
+
+    <div class="menu-block">
+    <div class="menu-block-head">
+      <h3 data-en="Guatemalan Dishes" data-es="Platillos Guatemaltecos">Guatemalan Dishes</h3>
+      <p data-en="The food Gloria grew up cooking, made from family recipes." data-es="La comida con la que Gloria creció, hecha con recetas de familia.">The food Gloria grew up cooking, made from family recipes.</p>
+    </div>
+
+    <div class="menu-grid">
+
+      <button type="button" class="dish-card" data-id="d1" data-swatch="ph-1" aria-pressed="false">
+        <div class="dish-photo ph-1">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Dish One" data-es="Platillo Uno">Dish One</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+      <button type="button" class="dish-card" data-id="d2" data-swatch="ph-2" aria-pressed="false">
+        <div class="dish-photo ph-2">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Dish Two" data-es="Platillo Dos">Dish Two</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+      <button type="button" class="dish-card" data-id="d3" data-swatch="ph-3" aria-pressed="false">
+        <div class="dish-photo ph-3">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Dish Three" data-es="Platillo Tres">Dish Three</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+    </div>
+    </div>
+
+    <div class="menu-block">
+    <div class="menu-block-head">
+      <h3 data-en="From the Recipe Book" data-es="Del Recetario">From the Recipe Book</h3>
+      <p data-en="Crowd pleasers for mixed groups and picky eaters, cooked with the same care." data-es="Platillos que le gustan a todos, para grupos variados, hechos con el mismo cuidado.">Crowd pleasers for mixed groups and picky eaters, cooked with the same care.</p>
+    </div>
+
+    <div class="menu-grid">
+
+      <button type="button" class="dish-card" data-id="d4" data-swatch="ph-4" aria-pressed="false">
+        <div class="dish-photo ph-4">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Pasta Alfredo" data-es="Pasta Alfredo">Pasta Alfredo</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+      <button type="button" class="dish-card" data-id="d5" data-swatch="ph-5" aria-pressed="false">
+        <div class="dish-photo ph-5">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Spaghetti" data-es="Espagueti">Spaghetti</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+      <button type="button" class="dish-card" data-id="d6" data-swatch="ph-6" aria-pressed="false">
+        <div class="dish-photo ph-6">
+          <span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span>
+          <span class="pick">
+            <svg class="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg>
+          </span>
+        </div>
+        <div class="dish-name" data-en="Dish Six" data-es="Platillo Seis">Dish Six</div>
+        <div class="dish-desc" data-en="Placeholder description of the dish goes here, a line or two." data-es="Descripción de muestra del platillo, una o dos líneas.">Placeholder description of the dish goes here, a line or two.</div>
+        <div class="dish-status" data-en="Added to your list" data-es="Agregado a su lista">Added to your list</div>
+      </button>
+
+    </div>
+    </div>
+  </div>
+</section>
+
+<div class="weave"></div>
+
+<section class="story" id="story">
+  <div class="section-inner story-grid">
+    <div class="story-photo"><span data-en="Photo placeholder" data-es="Foto próximamente">Photo placeholder</span></div>
+    <div class="story-text">
+      <div class="kicker" data-en="Our Story" data-es="Nuestra Historia">Our Story</div>
+      <h2 class="display" data-en="Placeholder headline about the family behind the catering" data-es="Título de muestra sobre la familia detrás del catering">Placeholder headline about the family behind the catering</h2>
+      <p data-en="Placeholder paragraph. This space will hold the real story once it's shared, covering where the recipes come from and what makes the food distinct." data-es="Párrafo de muestra. Este espacio contendrá la historia real, incluyendo el origen de las recetas y lo que distingue a la comida.">Placeholder paragraph. This space will hold the real story once it's shared, covering where the recipes come from and what makes the food distinct.</p>
+      <p data-en="Placeholder paragraph, second line for spacing reference only." data-es="Párrafo de muestra, segunda línea solo como referencia de espacio.">Placeholder paragraph, second line for spacing reference only.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="section-inner">
+    <h2 class="display" data-en="Planning an event?" data-es="¿Planeando un evento?">Planning an event?</h2>
+    <p data-en="Start with the menu, then send us your list. We will confirm headcount, delivery, and pricing from there." data-es="Empiece con el menú y envíenos su lista. De ahí confirmamos el número de invitados, la entrega y el precio.">Start with the menu, then send us your list. We will confirm headcount, delivery, and pricing from there.</p>
+
+    <div class="cta-group">
+      <a href="#menu" class="cta-btn cta-call">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"></path></svg>
+        <span data-en="Look at the menu" data-es="Vea el menú">Look at the menu</span>
+      </a>
+      <a href="tel:+15555555555" class="cta-btn cta-text">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+        <span data-en="Call us instead" data-es="O llámenos">Call us instead</span>
+      </a>
+    </div>
+
+    <div class="phone-row">
+      <span data-en="(555) 555-5555" data-es="(555) 555-5555">(555) 555-5555</span>
+      <button class="copy-btn" onclick="copyPhone(this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span class="copy-label" data-en="Copy number" data-es="Copiar número">Copy number</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Quetzal Table</div>
+      <address data-en-html="123 Placeholder Street&lt;br&gt;City, State 00000&lt;br&gt;(555) 555-5555" data-es-html="Calle de Muestra 123&lt;br&gt;Ciudad, Estado 00000&lt;br&gt;(555) 555-5555">
+        123 Placeholder Street<br>
+        City, State 00000<br>
+        (555) 555-5555
+      </address>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4 data-en="Explore" data-es="Explorar">Explore</h4>
+        <a href="#menu" data-en="Menu" data-es="Menú">Menu</a>
+        <a href="#story" data-en="Our Story" data-es="Nuestra Historia">Our Story</a>
+        <a href="#" data-en="Catering" data-es="Catering">Catering</a>
+      </div>
+      <div class="footer-col">
+        <h4 data-en="Follow" data-es="Síganos">Follow</h4>
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Quetzal Table</span>
+    <span data-en="Design placeholder, menu and photos to be added" data-es="Diseño de muestra, menú y fotos por agregar">Design placeholder, menu and photos to be added</span>
+  </div>
+</footer>
+
+<!-- sticky order bar -->
+<div class="order-bar" id="order-bar" role="region" aria-live="polite">
+  <span class="order-bar-count" id="order-bar-count"></span>
+  <span class="order-bar-actions">
+    <button type="button" class="clear" id="clear-btn" onclick="clearOrder()"></button>
+    <button type="button" class="review" id="review-btn" onclick="openOrder()"></button>
+  </span>
+</div>
+
+<!-- order modal -->
+<div class="backdrop" id="backdrop" onclick="backdropClick(event)">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="sheet-head">
+      <div>
+        <h3 id="sheet-title" data-en="Your order" data-es="Su pedido">Your order</h3>
+        <p data-en="Send this list to us, we confirm price and timing." data-es="Envíenos esta lista y confirmamos precio y horario.">Send this list to us, we confirm price and timing.</p>
+      </div>
+      <button type="button" class="close-x" onclick="closeOrder()" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <div class="sheet-body">
+      <div class="order-list" id="order-list"></div>
+
+      <div class="method-tabs">
+        <button type="button" id="tab-text" class="active" onclick="setMethod('text')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          <span data-en="Text your order" data-es="Enviar por mensaje">Text your order</span>
+        </button>
+        <button type="button" id="tab-call" onclick="setMethod('call')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span data-en="Call it in" data-es="Llamar">Call it in</span>
+        </button>
+      </div>
+
+      <div class="panel active" id="panel-text">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4 data-en="Save our number first" data-es="Guarde nuestro número primero">Save our number first</h4>
+            <p data-en="If Quetzal Table is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number." data-es="Si Quetzal Table todavía no está en sus contactos, descargue la tarjeta de contacto y ábrala para guardarnos. Así nuestra respuesta llega con nombre y no como número desconocido.">If Quetzal Table is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number.</p>
+            <button type="button" class="btn-line" onclick="downloadVcf()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+              <span data-en="Download contact" data-es="Descargar contacto">Download contact</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4 data-en="Copy your order" data-es="Copie su pedido">Copy your order</h4>
+            <p data-en="This is the message with your list in it. Copy it in case your phone does not fill it in for you." data-es="Este es el mensaje con su lista. Cópielo por si su teléfono no lo llena automáticamente.">This is the message with your list in it. Copy it in case your phone does not fill it in for you.</p>
+            <div class="msg-box" id="msg-box"></div>
+            <button type="button" class="btn-line" id="copy-msg-btn" onclick="copyMessage(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span class="copy-label" data-en="Copy message" data-es="Copiar mensaje">Copy message</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="step" style="padding-bottom:6px;">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4 data-en="Send it to us" data-es="Envíelo">Send it to us</h4>
+            <p data-en="This opens your messaging app with our number ready. Paste the order if it is not already there, then hit send." data-es="Esto abre su aplicación de mensajes con nuestro número listo. Pegue el pedido si no aparece y envíelo.">This opens your messaging app with our number ready. Paste the order if it is not already there, then hit send.</p>
+            <a class="btn-solid btn-wide" id="sms-link" href="sms:+15555555555">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span data-en="Open Messages" data-es="Abrir Mensajes">Open Messages</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-call">
+        <p class="call-lead" data-en="Prefer to talk it through? Keep this window open while you call so you can read your list off the screen." data-es="¿Prefiere hablar? Deje esta ventana abierta mientras llama para leer su lista en la pantalla.">Prefer to talk it through? Keep this window open while you call so you can read your list off the screen.</p>
+        <div class="call-number">(555) 555-5555</div>
+        <div class="call-hours" data-en="Mon to Sat, 9am to 6pm" data-es="Lunes a sábado, 9am a 6pm">Mon to Sat, 9am to 6pm</div>
+        <a class="btn-solid btn-wide" href="tel:+15555555555" style="margin-bottom:12px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <span data-en="Call now" data-es="Llamar ahora">Call now</span>
+        </a>
+        <button type="button" class="btn-line btn-wide" onclick="copyPhone(this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span class="copy-label" data-en="Copy number" data-es="Copiar número">Copy number</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var currentLang = 'en';
+  var PHONE = '+15555555555';
+  var order = {};        /* { dishId: quantity } */
+  var method = 'text';
+
+  var T = {
+    barOne:   { en: '1 dish selected',        es: '1 platillo seleccionado' },
+    barMany:  { en: '{n} dishes selected',    es: '{n} platillos seleccionados' },
+    review:   { en: 'Ready to order',         es: 'Listo para ordenar' },
+    clear:    { en: 'Clear',                  es: 'Borrar' },
+    empty:    { en: 'Nothing selected yet. Close this and tap the dishes you want.',
+                es: 'Todavía no hay nada seleccionado. Cierre esto y toque los platillos que quiera.' },
+    remove:   { en: 'Remove',                 es: 'Quitar' },
+    copied:   { en: 'Copied',                 es: 'Copiado' },
+    msgHead:  { en: 'Hola Quetzal Table, I would like to order catering:',
+                es: 'Hola Quetzal Table, quisiera hacer un pedido de catering:' },
+    msgTail:  { en: '\nName:\nDate and time:\nHow many people:\nPickup or delivery:',
+                es: '\nNombre:\nFecha y hora:\nCuántas personas:\nRecoger o entrega:' }
+  };
+
+  function t(key){ return T[key][currentLang]; }
+
+  function dishName(id, lang){
+    var card = document.querySelector('.dish-card[data-id="' + id + '"] .dish-name');
+    return card ? card.getAttribute('data-' + lang) : id;
+  }
+
+  function totalCount(){
+    var n = 0;
+    for (var id in order){ n += order[id]; }
+    return n;
+  }
+
+  function toggleDish(card){
+    var id = card.getAttribute('data-id');
+    if (order[id]){ delete order[id]; }
+    else { order[id] = 1; }
+    render();
+  }
+
+  function changeQty(id, delta){
+    order[id] = (order[id] || 0) + delta;
+    if (order[id] < 1){ delete order[id]; }
+    render();
+  }
+
+  function clearOrder(){
+    order = {};
+    render();
+    closeOrder();
+  }
+
+  function buildMessage(){
+    var lines = [t('msgHead'), ''];
+    for (var id in order){
+      lines.push(order[id] + 'x ' + dishName(id, currentLang));
+    }
+    lines.push(t('msgTail'));
+    return lines.join('\n');
+  }
+
+  function render(){
+    /* cards */
+    document.querySelectorAll('.dish-card').forEach(function(card){
+      var on = !!order[card.getAttribute('data-id')];
+      card.classList.toggle('picked', on);
+      card.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+
+    /* sticky bar */
+    var n = totalCount();
+    var bar = document.getElementById('order-bar');
+    bar.classList.toggle('visible', n > 0);
+    document.body.classList.toggle('has-order', n > 0);
+    document.getElementById('order-bar-count').textContent =
+      n === 1 ? t('barOne') : t('barMany').replace('{n}', n);
+    document.getElementById('review-btn').textContent = t('review');
+    document.getElementById('clear-btn').textContent = t('clear');
+
+    /* order list in modal */
+    var list = document.getElementById('order-list');
+    list.innerHTML = '';
+    if (n === 0){
+      var p = document.createElement('p');
+      p.className = 'empty-note';
+      p.textContent = t('empty');
+      list.appendChild(p);
+    } else {
+      for (var id in order){
+        list.appendChild(orderRow(id));
+      }
+    }
+
+    /* message + sms link */
+    var msg = buildMessage();
+    document.getElementById('msg-box').textContent = msg;
+    document.getElementById('sms-link').setAttribute(
+      'href', 'sms:' + PHONE + '?&body=' + encodeURIComponent(msg)
+    );
+  }
+
+  function orderRow(id){
+    var card = document.querySelector('.dish-card[data-id="' + id + '"]');
+    var row = document.createElement('div');
+    row.className = 'order-item';
+
+    var sw = document.createElement('div');
+    sw.className = 'order-item-swatch ' + card.getAttribute('data-swatch');
+    row.appendChild(sw);
+
+    var name = document.createElement('div');
+    name.className = 'order-item-name';
+    name.textContent = dishName(id, currentLang);
+    row.appendChild(name);
+
+    var qty = document.createElement('div');
+    qty.className = 'qty';
+
+    var minus = document.createElement('button');
+    minus.type = 'button';
+    minus.textContent = '\u2212';
+    minus.setAttribute('aria-label', t('remove'));
+    minus.onclick = function(){ changeQty(id, -1); };
+
+    var count = document.createElement('span');
+    count.textContent = order[id];
+
+    var plus = document.createElement('button');
+    plus.type = 'button';
+    plus.textContent = '+';
+    plus.onclick = function(){ changeQty(id, 1); };
+
+    qty.appendChild(minus);
+    qty.appendChild(count);
+    qty.appendChild(plus);
+    row.appendChild(qty);
+    return row;
+  }
+
+  function openOrder(){
+    document.getElementById('backdrop').classList.add('open');
+    document.body.classList.add('order-open');
+  }
+  function closeOrder(){
+    document.getElementById('backdrop').classList.remove('open');
+    document.body.classList.remove('order-open');
+  }
+  function backdropClick(e){
+    if (e.target.id === 'backdrop'){ closeOrder(); }
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape'){ closeOrder(); }
+  });
+
+  function setMethod(m){
+    method = m;
+    document.getElementById('tab-text').classList.toggle('active', m === 'text');
+    document.getElementById('tab-call').classList.toggle('active', m === 'call');
+    document.getElementById('panel-text').classList.toggle('active', m === 'text');
+    document.getElementById('panel-call').classList.toggle('active', m === 'call');
+  }
+
+  function downloadVcf(){
+    var vcf = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      'N:Table;Quetzal;;;',
+      'FN:Quetzal Table',
+      'ORG:Quetzal Table',
+      'TEL;TYPE=CELL,VOICE:' + PHONE,
+      'ADR;TYPE=WORK:;;123 Placeholder Street;City;State;00000;',
+      'NOTE:Guatemalan catering',
+      'END:VCARD'
+    ].join('\r\n');
+
+    var blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'quetzal-table.vcf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1500);
+  }
+
+  function flashLabel(btn, label){
+    if (!label) return;
+    var restore = label.getAttribute('data-' + currentLang);
+    label.textContent = t('copied');
+    btn.classList.add('copied');
+    setTimeout(function(){
+      label.textContent = restore;
+      btn.classList.remove('copied');
+    }, 1800);
+  }
+
+  function writeClipboard(text, done){
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(done);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(err) {}
+      document.body.removeChild(ta);
+      done();
+    }
+  }
+
+  function copyPhone(btn){
+    var label = btn.querySelector('.copy-label');
+    writeClipboard(PHONE, function(){ flashLabel(btn, label); });
+  }
+
+  function copyMessage(btn){
+    var label = btn.querySelector('.copy-label');
+    writeClipboard(buildMessage(), function(){ flashLabel(btn, label); });
+  }
+
+  function setLang(lang){
+    currentLang = lang;
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      el.textContent = el.getAttribute('data-' + lang);
+    });
+    document.querySelectorAll('[data-en-html]').forEach(function(el){
+      el.innerHTML = el.getAttribute('data-' + lang + '-html');
+    });
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.documentElement.lang = lang;
+    render();
+  }
+
+  document.querySelectorAll('.dish-card').forEach(function(card){
+    card.addEventListener('click', function(){ toggleDish(card); });
+  });
+
+  render();
+</script>
+
+</body>
+</html>
