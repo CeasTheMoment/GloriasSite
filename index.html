@@ -996,7 +996,7 @@
 <footer>
   <div class="footer-inner">
     <div>
-      <div class="footer-brand">Quetzal Table</div>
+      <div class="footer-brand">Glorias Kitchen</div>
       <address data-en-html="123 Placeholder Street&lt;br&gt;City, State 00000&lt;br&gt;(555) 555-5555" data-es-html="Calle de Muestra 123&lt;br&gt;Ciudad, Estado 00000&lt;br&gt;(555) 555-5555">
         123 Placeholder Street<br>
         City, State 00000<br>
@@ -1018,7 +1018,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 Quetzal Table</span>
+    <span>© 2026 Glorias Kitchen</span>
     <span data-en="Design placeholder, menu and photos to be added" data-es="Diseño de muestra, menú y fotos por agregar">Design placeholder, menu and photos to be added</span>
   </div>
 </footer>
@@ -1064,7 +1064,7 @@
           <div class="step-num">1</div>
           <div class="step-body">
             <h4 data-en="Save our number first" data-es="Guarde nuestro número primero">Save our number first</h4>
-            <p data-en="If Quetzal Table is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number." data-es="Si Quetzal Table todavía no está en sus contactos, descargue la tarjeta de contacto y ábrala para guardarnos. Así nuestra respuesta llega con nombre y no como número desconocido.">If Quetzal Table is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number.</p>
+            <p data-en="If Glorias Kitchen is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number." data-es="Si Glorias Kitchen todavía no está en sus contactos, descargue la tarjeta de contacto y ábrala para guardarnos. Así nuestra respuesta llega con nombre y no como número desconocido.">If Glorias Kitchen is not in your contacts yet, download the contact card and open it to save us. Your reply will land in a named thread instead of an unknown number.</p>
             <button type="button" class="btn-line" onclick="downloadVcf()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
               <span data-en="Download contact" data-es="Descargar contacto">Download contact</span>
@@ -1130,8 +1130,8 @@
                 es: 'Todavía no hay nada seleccionado. Cierre esto y toque los platillos que quiera.' },
     remove:   { en: 'Remove',                 es: 'Quitar' },
     copied:   { en: 'Copied',                 es: 'Copiado' },
-    msgHead:  { en: 'Hola Quetzal Table, I would like to order catering:',
-                es: 'Hola Quetzal Table, quisiera hacer un pedido de catering:' },
+    msgHead:  { en: 'Hola Gloria, I would like to order catering:',
+                es: 'Hola Gloria, quisiera hacer un pedido de catering:' },
     msgTail:  { en: '\nName:\nDate and time:\nHow many people:\nPickup or delivery:',
                 es: '\nNombre:\nFecha y hora:\nCuántas personas:\nRecoger o entrega:' }
   };
@@ -1280,15 +1280,12 @@
 
   function downloadVcf(){
     var vcf = [
-      'BEGIN:VCARD',
-      'VERSION:3.0',
-      'N:Table;Quetzal;;;',
-      'FN:Quetzal Table',
-      'ORG:Quetzal Table',
-      'TEL;TYPE=CELL,VOICE:' + PHONE,
-      'ADR;TYPE=WORK:;;123 Placeholder Street;City;State;00000;',
-      'NOTE:Guatemalan catering',
-      'END:VCARD'
+      BEGIN:VCARD
+      VERSION:3.0
+      FN:Gloria Guatemalan Kitchen
+      N:Guatemalan Kitchen;Gloria;;;
+      TEL;TYPE=CELL:562-661-0625
+      END:VCARD
     ].join('\r\n');
 
     var blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
